@@ -6,7 +6,7 @@ web pages into clean, normalized data that can be used for analysis.
 ## Getting started
 You will need the following installed:
 
-Python 2.7.x (where `x` mean any number) [download here|https://www.python.org/downloads]
+* Python 2.7.x (where `x` mean any number) [download here](https://www.python.org/downloads)
 
 Then click on the 'Fork' button above to make your own copy of the project,
 so that you run
@@ -28,8 +28,8 @@ We are going to use what is called a fork-merge model for git.
 
 ### Getting the raw data
 A sample of the raw can be accessing by using the `lfs` plugin for `git`.
-Instructions to install the `lfs` plugin can be found here
-[https://git-lfs.github.com/].
+Instructions to install the `lfs` plugin can be found
+[here](https://git-lfs.github.com/).
 
 After installing the `lfs` plugin, setup the plugin by running
 
