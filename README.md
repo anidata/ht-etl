@@ -16,7 +16,8 @@ git clone https://gitlab.com/yourUsername/ht-etl.git
 ```
 
 where `yourUsername` is your actual user name (e.g. for Bryant Menn it would
-be `bmenn`, yours may vary).
+be `bmenn`, yours may vary). The SSH protocol currently does *NOT* work with
+`git lfs` with these instructions.
 
 Do *NOT* run the following:
 
@@ -40,7 +41,7 @@ git lfs install
 and get the file with
 
 ```
-git lfs fetch master
+git lfs fetch
 ```
 
 ### Hacking
