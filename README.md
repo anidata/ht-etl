@@ -68,7 +68,11 @@ pip install -e .
 
 ## Running ETL
 
-ETL batch uses Luigi (http://luigi.readthedocs.io/en/stable/index.html) under the hood.  To run all the jobs excute:
+ETL batch uses Luigi (http://luigi.readthedocs.io/en/stable/index.html) under the hood.  
+
+To configure Luigi, rename `luigi.cfg.example` to `luigi.cfg` and add the password to that file.
+
+To run all the jobs excute:
 
 ```
 luigi --module htetl.all_jobs HtTasks --local-scheduler
