@@ -1,2 +1,4 @@
+*.cfg
 *.egg-info
 *.pyc
+data/*

@@ -14,6 +14,8 @@ setup(
         ext_package = "htetl",
         packages=["htetl", "htetl"],
         package_dir={'htetl': 'htetl'},
-        install_requires=["pandas",
-                          "luigi"]
+        install_requires=['pandas',
+                          'luigi',
+                          'psycopg2',
+                          'sqlalchemy']
         )

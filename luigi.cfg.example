@@ -1,0 +1,5 @@
+[QueryPostgres]
+host: db.anidata.org
+database: sandbox
+user: dbuser
+password:

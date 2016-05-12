@@ -1,5 +1,3 @@
-""" batch processing using luigi """
-
 import luigi
 import pandas as pd
 
@@ -14,14 +12,13 @@ class RawFlatData(luigi.ExternalTask):
 
 class ReverseUrl(luigi.Task):
     """  reversing url task """
+
     def output(self):
         out_path = 'data/reverse_url.csv'
         return luigi.LocalTarget(out_path)
 
     def requires(self):
         return RawFlatData()
-
-    url_column = 5
 
     def run(self):
         """ data is small enough to use pandas for the processing """
@@ -31,12 +28,3 @@ class ReverseUrl(luigi.Task):
 
         df.to_csv(self.output().path, index=None)
 
-
-
-if __name__ == '__main__':
-    """
-    from repo root run
-
-    python htetl/batch_luigi.py ReverseUrl --local-scheduler
-    """
-    luigi.run()
