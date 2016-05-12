@@ -1,18 +1,16 @@
-import pandas as pd
-import luigi
 from . import util
+from . import email
 
 
-class RawFlatData(luigi.ExternalTask):
-    """ specify that an external task has created the input data """
+class LoadReverseEmail(util.LoadPostgres):
+    table = "flat_email"
 
-    def output(self):
-        in_path = 'data/flat_data.csv'
-        return luigi.LocalTarget(in_path)
+    columns = [("backpagepostid", "text"),
+               ("name", "text")]
 
+    header = True
 
-class LoadFlatData(util.LoadPostgres):
     def requires(self):
-        return RawFlatData()
+        return email.RawEmailData()
 
 

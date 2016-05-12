@@ -1,10 +1,12 @@
 """ batch processing using luigi """
 
 import luigi
+import luigi.postgres
 import pandas as pd
 import psycopg2
 import logging
-from sqlalchemy import create_engine
+import abc
+import string
 
 
 logger = logging.getLogger('luigi-interface')
@@ -55,15 +57,7 @@ class QueryPostgres(luigi.Task):
         self.conn.close()
 
 
-class LoadPostgres(QueryPostgres):
-    """
-    Base class to pull data from postgres and write to csv with inferred
-    columns.
-
-    When inheriting, you must implement:
-        input
-
-    """
+class LoadPostgres(luigi.postgres.CopyToTable):
     host = luigi.Parameter(config_path=dict(section='QueryPostgres',
                                             name='host'),
                            significant=False)
@@ -76,28 +70,22 @@ class LoadPostgres(QueryPostgres):
     password = luigi.Parameter(config_path=dict(section='QueryPostgres',
                                                 name='password'),
                                significant=False)
+    null_values = ['']
+    header = False
+    seperator = ','
 
-    chunksize = 10000
+    def rows(self):
+        """
+        Return/yield tuples or lists corresponding to each row to be inserted.
+        """
+        with self.input().open('r') as fobj:
+            for k, line in enumerate(fobj):
+                if k == 0 and self.header:
+                    continue
+                row_str = filter(lambda x: x in string.printable, line)
+                row_str = row_str.strip('\n').split(self.seperator)
+                yield row_str
 
-    def run(self):
-
-        engine = create_engine(
-            'postgresql://{user}:{password}@{host}/{dbname}'.format(
-                dbname=self.database,
-                user=self.user,
-                host=self.host,
-                password=self.password))
-
-        c = engine.connect()
-        conn = c.connection
-
-        df_iterator = pd.read_csv(self.input().path,
-                                  chunksize=self.chunksize)
-
-        for ind, df in enumerate(df_iterator):
-            lines_writte = ind * self.chunksize + len(df)
-            df.to_sql('flat_no_body', engine)
-            logger.info(str(lines_writte) + " lines loaded")
-
-
-        self.conn.close()
+    @abc.abstractproperty
+    def table(self):
+        return None

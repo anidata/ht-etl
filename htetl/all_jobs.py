@@ -10,5 +10,5 @@ class HtTasks(luigi.WrapperTask):
     def requires(self):
         yield email.RawEmailData()
         yield phone.RawPhoneData()
-        yield reverse_url.ReverseUrl()
+        yield reverse_url.LoadReverseUrl()
 

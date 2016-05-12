@@ -1,5 +1,8 @@
+""" Example of processing data from file on disk """
+
 import luigi
 import pandas as pd
+from . import util
 
 
 class RawFlatData(luigi.ExternalTask):
@@ -25,6 +28,18 @@ class ReverseUrl(luigi.Task):
         df = pd.read_csv(self.input().path)
 
         df['reversed_url'] = df.url.map(lambda x: x[::-1])
+        df = df[['url', 'reversed_url']]
 
         df.to_csv(self.output().path, index=None)
 
+
+class LoadReverseUrl(util.LoadPostgres):
+    table = "reverse_url"
+
+    columns = [("url", "text"),
+               ("reversed_url", "text")]
+
+    header = True
+
+    def requires(self):
+        return ReverseUrl()

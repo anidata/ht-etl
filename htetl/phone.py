@@ -4,7 +4,6 @@ import luigi
 
 class RawPhoneData(util.QueryPostgres):
 
-    # read parameters from luigi.cfg
     sql = 'select * from backpagephone'
 
     def output(self):
