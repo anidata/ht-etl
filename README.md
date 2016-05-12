@@ -59,3 +59,9 @@ git push origin
 
 And then open a merge request and make sure it's mentioned in the issue's
 comments.
+
+## Module Installation
+
+```
+pip install -e .
+```
