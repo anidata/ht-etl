@@ -75,5 +75,5 @@ To configure Luigi, rename `luigi.cfg.example` to `luigi.cfg` and add the passwo
 To run all the jobs excute:
 
 ```
-luigi --module htetl.all_jobs HtTasks --local-scheduler
+luigi --module htetl.main_jobs LoadEntityIds --local-scheduler
 ```

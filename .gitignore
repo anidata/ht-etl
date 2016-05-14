@@ -1,4 +1,5 @@
 *.cfg
 *.egg-info
 *.pyc
-data/*
+data/*.csv
+data/*.json
