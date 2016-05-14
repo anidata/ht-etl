@@ -50,9 +50,13 @@ class QueryPostgres(luigi.Task):
 
         with open(self.output().path, 'a') as f:
             for ind, df in enumerate(df_iterator):
-                df.to_csv(f, index=None)
-                lines_writte = ind * self.chunksize + len(df)
-                logger.info(str(lines_writte) + " lines written")
+                if ind == 0:
+                    df.to_csv(f, index=None)
+                else:
+                    df.to_csv(f, index=None, header=None)
+
+                lines_written = ind * self.chunksize + len(df)
+                logger.info(str(lines_written) + " lines written")
 
         self.conn.close()
 
