@@ -11,13 +11,6 @@ logger = logging.getLogger('luigi-interface')
 logger.setLevel(logging.DEBUG)
 
 
-class HtTasks(luigi.WrapperTask):
-    """ Runs all tasks """
-
-    def requires(self):
-        yield get_data.RawEmailData()
-        yield get_data.RawPhoneData()
-        yield reverse_url.LoadReverseUrl()
 
 
 class MakeGraph(luigi.Task):
