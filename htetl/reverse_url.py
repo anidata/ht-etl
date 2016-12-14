@@ -5,6 +5,13 @@ import pandas as pd
 from . import util
 
 
+class HtTasks(luigi.WrapperTask):
+    """ Runs all tasks """
+
+    def requires(self):
+        yield LoadReverseUrl()
+
+
 class RawFlatData(luigi.ExternalTask):
     """ specify that an external task has created the input data """
 
