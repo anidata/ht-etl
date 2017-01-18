@@ -17,5 +17,6 @@ setup(
         install_requires=['pandas',
                           'luigi',
                           'psycopg2',
-                          'sqlalchemy']
+                          'sqlalchemy',
+                          'networkx']
         )
