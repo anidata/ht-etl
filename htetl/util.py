@@ -48,16 +48,22 @@ class QueryPostgres(luigi.Task):
                                         self.conn,
                                         chunksize=self.chunksize)
 
+
+        
         with open(self.output().path, 'a') as f:
             for ind, df in enumerate(df_iterator):
-                if ind == 0:
-                    df.to_csv(f, index=None)
-                else:
-                    df.to_csv(f, index=None, header=None)
+                utf8_encode = lambda cell: cell.encode("utf-8") if type(cell)==str else cell # TODO check if this screws anything up
+                df = df.applymap(utf8_encode) # prevents UnicodeDecodeError when trying to write unusual characters to CSV
+                import sys
 
+                print('version')
+                print(sys.version_info)
+                if ind == 0:
+                    df.to_csv(f, index=None, encoding='utf-8')
+                else:
+                    df.to_csv(f, index=None, header=None, encoding='utf-8')
                 lines_written = ind * self.chunksize + len(df)
                 logger.info(str(lines_written) + " lines written")
-
         self.conn.close()
 
 

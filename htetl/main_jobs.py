@@ -7,11 +7,7 @@ from . import reverse_url
 from . import util
 
 logger = logging.getLogger('luigi-interface')
-
 logger.setLevel(logging.DEBUG)
-
-
-
 
 class MakeGraph(luigi.Task):
     """  reversing url task """
@@ -61,7 +57,6 @@ class MakeGraph(luigi.Task):
                                        'backpagepostid']).astype(int)
         df_out.to_csv(self.output().path, index=None)
 
-
 class LoadEntityIds(util.LoadPostgres):
     table = 'backpageentities'
 
@@ -72,3 +67,34 @@ class LoadEntityIds(util.LoadPostgres):
 
     def requires(self):
         return MakeGraph()
+    
+class ParseEmails(luigi.Task):
+    '''
+        Parses emails from raw Backpage posts & saves result in Postgres table called EmailAddress
+        NB: overwrites any previously existing EmailAddress
+    '''
+    host = luigi.Parameter(significant=False) # command line parameter when running this Task, example: --host localhost
+    database = luigi.Parameter(significant=False)
+    user = luigi.Parameter(significant=False)
+    password = luigi.Parameter(significant=False)
+
+    def requires(self):
+        return get_data.RawHTMLPostData(self.host, self.database, self.user, self.password)
+    
+    def output(self):
+        return luigi.LocalTarget('data/dummy.txt') # this will never be created so this task will always run.
+                                                    # TODO find a better way to specify "no output file but run this Task anyway" - WrapperClass?
+    
+    def run(self):
+        in_path = self.input().path
+        logger.info("Processing {}".format(in_path))
+        import csv
+        with open(in_path, 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+            for row in spamreader:
+                print('XXXXXXXXXXXXXXXX')
+                print(row)
+                print('YYYYYYYYYYYYYYYY')
+
+        #print(df)
+        print('done!')
