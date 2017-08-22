@@ -112,14 +112,14 @@ luigi --module htetl.main_jobs LoadEntityIds --local-scheduler
     * Server = ```localhost```
     * Database = ```crawler``` (NOT postgres)
     * Port = ```5432``` (Default Postgres port is 5432 - you can see the server's port in pgAdmin)
-    * Username = postgres
+    * Username = ```postgres```
     * Password=```your_password```
     * Prompt should now be ```crawler=#```
     * ```CREATE ROLE dbadmin WITH SUPERUSER LOGIN PASSWORD '1234';```
     * ```\i 'C:/your/path/to/crawler.sql';```    
     * in pgAdmin you should see some tables as below
     
-    ![pgAdmin_crawler](img/pgadmin_crawler.png)
+    ![pgAdmin_crawler](img/pgAdmin_crawler.png)
 
 ### Run Luigi tasks
 
