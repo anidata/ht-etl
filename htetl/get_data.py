@@ -38,7 +38,9 @@ class RawHTMLPostData(util.QueryPostgres):
      on this one to make the CSV.
     '''
 
-    sql = 'SELECT id,body FROM backpagecontent LIMIT 10;'
+    # NB: if you change these column names, you must change the corresponding column names
+    # in the chain of Tasks that require this Task
+    sql = 'SELECT backpagepostid,body FROM backpagecontent ORDER BY backpagepostid ASC;' 
     
     def output(self):
         in_path = 'data/flat_post.csv'

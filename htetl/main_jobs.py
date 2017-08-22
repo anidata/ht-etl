@@ -2,6 +2,7 @@ import luigi
 import logging
 import pandas as pd
 import networkx as nx
+import string
 from . import get_data
 from . import reverse_url
 from . import util
@@ -70,31 +71,55 @@ class LoadEntityIds(util.LoadPostgres):
     
 class ParseEmails(luigi.Task):
     '''
-        Parses emails from raw Backpage posts & saves result in Postgres table called EmailAddress
-        NB: overwrites any previously existing EmailAddress
+        Parses emails from raw Backpage posts & saves emails / post IDs in CSV file
+        NB: only finds the FIRST email in the posting (if any)
     '''
-    host = luigi.Parameter(significant=False) # command line parameter when running this Task, example: --host localhost
+    host = luigi.Parameter(significant=False)
     database = luigi.Parameter(significant=False)
     user = luigi.Parameter(significant=False)
     password = luigi.Parameter(significant=False)
-
+    outfile = 'data/parsed_email.csv'
+    
     def requires(self):
         return get_data.RawHTMLPostData(self.host, self.database, self.user, self.password)
     
     def output(self):
-        return luigi.LocalTarget('data/dummy.txt') # this will never be created so this task will always run.
-                                                    # TODO find a better way to specify "no output file but run this Task anyway" - WrapperClass?
-    
+        return luigi.LocalTarget(self.outfile)
+                                                  
     def run(self):
         in_path = self.input().path
         logger.info("Processing {}".format(in_path))
-        import csv
-        with open(in_path, 'r') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-            for row in spamreader:
-                print('XXXXXXXXXXXXXXXX')
-                print(row)
-                print('YYYYYYYYYYYYYYYY')
+        df = pd.read_csv(in_path)
+        '''
+            (...) = make a capture group - at least one is required for pandas Series.str.extract method
+            [\w._-] = match any alphanumeric character (\w) or . or _ or -
+            + = match preceding expression one or more times
+            @ = match @
+            \. = match .
+        '''
+        df["email"] = df["body"].str.extract("([\w._-]+@[\w_-]+\.\w+)", expand=True)
+        df = df.drop('body', 1)
+        df = df.dropna(axis=0, how='any')
+        if not df["email"].str.extract('(,)', expand=True).dropna(axis=0, how='any').empty:
+            raise ValueError(' '.join(['At least one parsed email address contains a comma,', 
+                             'which may cause problems when other code loads', self.outfile, 'with comma separator']))
+                            
+        with open(self.output().path, 'a') as f:  # write posting id & emails to CSV
+            df.to_csv(f, index=None, encoding='utf-8')
 
-        #print(df)
-        print('done!')
+class EmailsToPostgres(util.LoadPostgres):
+    '''
+        Loads CSV file of parsed emails / posting ids and saves to Postgres table.
+        NB: The way luigi.postgres.CopyToTable is set up, if you run this
+        twice in a row it won't overwrite the existing table. To make it save
+        a new table, in Postgres command line or pgAdmin you have to drop that table
+        AND the table called "table_updates" (or at least the "Emails_to_Postgres" row).
+        Otherwise Luigi will think the Task is already done, because it checks "table_updates".
+    '''
+    header = True
+    table = 'emailaddress' # safer to make table / column names lowercase
+    columns = [("backpagepostid", "INT"),
+               ("email",          "TEXT")]
+
+    def requires(self):
+        return ParseEmails(self.host, self.database, self.user, self.password)
