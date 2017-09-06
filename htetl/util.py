@@ -48,16 +48,18 @@ class QueryPostgres(luigi.Task):
                                         self.conn,
                                         chunksize=self.chunksize)
 
-        with open(self.output().path, 'a') as f:
+        # write to output file
+        with open(self.output().path, 'a') as f: 
             for ind, df in enumerate(df_iterator):
+                # Erase non-standard characters from string fields, like the Unicode character for a checkmark.
+                string_filter = lambda cell: filter(lambda x: x in string.printable, cell) if type(cell)==str else cell
+                df = df.applymap(string_filter) # prevents UnicodeDecodeError when trying to write unusual characters to CSV
                 if ind == 0:
-                    df.to_csv(f, index=None)
+                    df.to_csv(f, index=None, encoding='utf-8')
                 else:
-                    df.to_csv(f, index=None, header=None)
-
+                    df.to_csv(f, index=None, header=None, encoding='utf-8')
                 lines_written = ind * self.chunksize + len(df)
                 logger.info(str(lines_written) + " lines written")
-
         self.conn.close()
 
 
@@ -87,7 +89,7 @@ class LoadPostgres(luigi.postgres.CopyToTable):
                 if k == 0 and self.header:
                     continue
                 row_str = filter(lambda x: x in string.printable, line)
-                row_str = row_str.strip('\n').split(self.seperator)
+                row_str = row_str.strip('\n\r').split(self.seperator)
                 yield row_str
 
     @abc.abstractproperty
