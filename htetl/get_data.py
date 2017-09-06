@@ -3,7 +3,6 @@ import luigi
 
 
 class RawEmailData(util.QueryPostgres):
-
     """ load eaxmple """
     sql = 'select backpagepostid,name from backpageemail'
 
@@ -13,7 +12,6 @@ class RawEmailData(util.QueryPostgres):
 
 
 class RawPhoneData(util.QueryPostgres):
-
     sql = 'select backpagepostid,number from backpagephone'
 
     def output(self):
@@ -40,8 +38,8 @@ class RawHTMLPostData(util.QueryPostgres):
 
     # NB: if you change these column names, you must change the corresponding column names
     # in the chain of Tasks that require this Task
-    sql = 'SELECT backpagepostid,body FROM backpagecontent ORDER BY backpagepostid ASC;' 
-    
+    sql = 'SELECT backpagepostid,body FROM backpagecontent ORDER BY backpagepostid ASC;'
+
     def output(self):
         in_path = 'data/flat_post.csv'
         return luigi.LocalTarget(in_path)

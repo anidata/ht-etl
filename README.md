@@ -8,7 +8,7 @@ You will need the following installed:
 
 * Python 2.7.x (where `x` means any number) [download here](https://www.python.org/downloads)
     * Alternative: make a Python 2.7 environment with Anaconda - see example below.
-    
+
 Then click on the 'Fork' button above to make your own copy of the project,
 so that you run
 
@@ -71,7 +71,7 @@ comments.
 
 ## Running ETL
 
-ETL batch uses Luigi (http://luigi.readthedocs.io/en/stable/index.html) under the hood.  
+ETL batch uses Luigi (http://luigi.readthedocs.io/en/stable/index.html) under the hood.
 
 To configure Luigi, rename `luigi.cfg.example` to `luigi.cfg` and add the password to that file.
 
@@ -116,9 +116,9 @@ luigi --module htetl.main_jobs LoadEntityIds --local-scheduler
     * Password=```your_password```
     * Prompt should now be ```crawler=#```
     * ```CREATE ROLE dbadmin WITH SUPERUSER LOGIN PASSWORD '1234';```
-    * ```\i 'C:/your/path/to/crawler.sql';```    
+    * ```\i 'C:/your/path/to/crawler.sql';```
     * in pgAdmin you should see some tables as below
-    
+
     ![pgAdmin_crawler](img/pgAdmin_crawler.png)
 
 ### Run Luigi tasks
@@ -135,7 +135,7 @@ luigi --module htetl.main_jobs LoadEntityIds --local-scheduler
 
 *A strange error I encountered sometimes was "ValueError: need more than 1 value to unpack", originating in ```lock.py```.
  I don't know why, but fixed it by deleting luigi's .pid files in ```C:\Users\Lukas\AppData\Local\Temp\luigi```*
- 
+
 
 ### What just happened? (step-by-step for Luigi newbies)
 
@@ -155,9 +155,9 @@ luigi --module htetl.main_jobs LoadEntityIds --local-scheduler
 * **luigi.postgres.CopyToTable** invokes ```run()```, which eventually calls ```rows()``` in **LoadPostgres** which loads the 2nd CSV file (via **[self.input()](http://luigi.readthedocs.io/en/stable/tasks.html#task-input)**)
     and returns the appropriate generator (yielding a tuple for each row).
  * **luigi.postgres.CopyToTable** now writes each row into the Postgres database **crawler**. It knows which table, columns and datatypes to write
-     because of ```table``` and ```columns``` variables in **EmailsToPostgres**. 
+     because of ```table``` and ```columns``` variables in **EmailsToPostgres**.
  * The "output" of **EmailsToPostgres** is not a file but a PostgresTarget representing the inserted dataset (it keeps track using the Postgres table ```table_updates```)
- 
+
 ### What if I want to re-run the pipeline to make a new set of output files and new Postgres table?
 
 * Luigi tasks won't execute a second time if the output target already exists. Therefore, you must manually delete the .csv files.

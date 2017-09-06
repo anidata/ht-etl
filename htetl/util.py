@@ -49,7 +49,7 @@ class QueryPostgres(luigi.Task):
                                         chunksize=self.chunksize)
 
         # write to output file
-        with open(self.output().path, 'a') as f: 
+        with open(self.output().path, 'a') as f:
             for ind, df in enumerate(df_iterator):
                 # Erase non-standard characters from string fields, like the Unicode character for a checkmark.
                 string_filter = lambda cell: filter(lambda x: x in string.printable, cell) if type(cell)==str else cell
