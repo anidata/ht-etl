@@ -2,7 +2,7 @@ import luigi
 import logging
 import pandas as pd
 import string
-from htetl.tasks import loadphones
+from htetl.tasks import loadpages
 from htetl import util
 
 
@@ -17,7 +17,7 @@ class ParsePhones(luigi.Task):
     outfile = 'data/page_emails.csv'
 
     def requires(self):
-        return loadphones.RawPageData() #self.host, self.database, self.user, self.password)
+        return loadpages.RawPageData() #self.host, self.database, self.user, self.password)
 
     def output(self):
         return luigi.LocalTarget(self.outfile)
