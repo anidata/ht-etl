@@ -35,6 +35,20 @@ FIRST_THREE_INDEX = 9
 LAST_FOUR_INDEX = 14
 
 
+def normalize(match_group):
+    def _norm(text):
+        lower_text = text.lower()
+        for d, w in enumerate(['zero', 'one', 'two', 'three', 'four',
+                               'five', 'six', 'seven', 'eight', 'nine']):
+            lower_text = str(d).join(lower_text.split(w))
+
+        return SEPARATOR_REGEX.sub('', lower_text)
+
+    norm_area_code = _norm(match_group[AREA_CODE_INDEX].strip())
+    norm_first_three = _norm(match_group[FIRST_THREE_INDEX].strip())
+    norm_last_four = _norm(match_group[LAST_FOUR_INDEX].strip())
+
+    return '-'.join([norm_area_code, norm_first_three, norm_last_four])
 
 class ParsePhones(luigi.Task):
     '''
@@ -59,7 +73,9 @@ class ParsePhones(luigi.Task):
 
             if match:
                 for phone in match:
-                    phones.append([row["id"],phone[0].strip()])
+                    pnumber=normalize(phone)
+
+                    phones.append([row["id"],pnumber])
 
         phonedf = pd.DataFrame(phones)
         with open(self.output().path, 'a') as f:
