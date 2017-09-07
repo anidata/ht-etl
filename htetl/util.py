@@ -1,7 +1,7 @@
 """ batch processing using luigi """
 
 import luigi
-import luigi.postgres
+import luigi.contrib.postgres
 import pandas as pd
 import psycopg2
 import logging
@@ -63,7 +63,7 @@ class QueryPostgres(luigi.Task):
         self.conn.close()
 
 
-class LoadPostgres(luigi.postgres.CopyToTable):
+class LoadPostgres(luigi.contrib.postgres.CopyToTable):
     host = luigi.Parameter(config_path=dict(section='QueryPostgres',
                                             name='host'),
                            significant=False)

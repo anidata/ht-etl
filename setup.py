@@ -22,7 +22,8 @@ setup(
         'pandas',
         'luigi',
         'psycopg2',
-        'networkx'
+        'networkx',
+        'rfc3987',
     ],
     test_requires=test_requirements,
     extras_require={
