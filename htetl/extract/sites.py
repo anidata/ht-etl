@@ -1,4 +1,6 @@
-import re
+import rfc3987
+
+URL_REGEX=rfc3987.get_compiled_pattern('%(URI)s')
 
 def extract_urls(text):
     '''Extract urls from given text
@@ -7,4 +9,5 @@ def extract_urls(text):
     :returns: List of urls extracted
 
     '''
-    return
+
+    return URL_REGEX.findall(text)
