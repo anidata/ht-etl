@@ -22,7 +22,6 @@ setup(
         'pandas',
         'luigi',
         'psycopg2',
-        'sqlalchemy',
         'networkx'
     ],
     test_requires=test_requirements,
