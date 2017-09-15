@@ -5,3 +5,4 @@
 *.pyc
 data/*.csv
 data/*.json
+**/.coverage
