@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+install:
+  - "pip install -e .[tests]"
+  - "pip install coveralls"
+script:
+  - "coverage run --source=htetl setup.py test"
+  - coveralls
+services:
+  - postgresql
