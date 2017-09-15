@@ -5,7 +5,7 @@ install:
   - "pip install -e .[tests]"
   - "pip install coveralls"
 script:
-  - "coverage run --source=htetl setup.py nosetest"
+  - "coverage run --source=htetl setup.py nosetests"
   - coveralls
 services:
   - postgresql

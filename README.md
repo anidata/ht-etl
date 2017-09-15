@@ -1,5 +1,6 @@
 # Human Trafficking ETL
 [![Build Status](https://travis-ci.org/anidata/ht-etl.svg?branch=master)](https://travis-ci.org/anidata/ht-etl) [![Coverage Status](https://coveralls.io/repos/github/anidata/ht-etl/badge.svg?branch=master)](https://coveralls.io/github/anidata/ht-etl?branch=master)
+
 This project will hold all the ETL code required to transform the raw HTML
 web pages into clean, normalized data that can be used for analysis.
 
