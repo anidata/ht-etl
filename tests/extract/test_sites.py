@@ -26,9 +26,9 @@ def test_extract_sites():
         ('foo https://somewhere.org/?foo=bar',
          ['somewhere.org']),
         ('http://elsewhere.net/?bar=foo https://place.net/',
-         ['elsewhere.net', 'place.net'])
+         ['elsewhere.net', 'place.net']),
         ('http://elsewhere.net/somewhere/here?bar=foo https://place.net/',
-         ['elsewhere.net', 'place.net'])
+         ['elsewhere.net', 'place.net']),
     ]
     for text, expected in data:
         yield check_extract_sites, text, expected
