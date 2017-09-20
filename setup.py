@@ -6,7 +6,8 @@ from setuptools import setup, find_packages
 
 test_requirements = [
     'nose',
-    'nose-watch'
+    'nose-watch',
+    'mock',
 ]
 
 setup(
