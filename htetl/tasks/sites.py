@@ -5,9 +5,10 @@ import pandas as pd
 
 import htetl.extract.sites as sites
 from htetl.tasks.loadpages import RawPageData
+import htetl.util as util
 
 
-class BaseSites(luigi.Task):
+class BaseSites(util.QueryPostgres):
 
     '''Return list of sites identifed as data scraping sources with IDs'''
     sql = 'select Id, Authority from BaseSites'

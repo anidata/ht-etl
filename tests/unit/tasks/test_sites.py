@@ -8,10 +8,10 @@ from .. import test_data, test_utils
 
 def setup_module():
     test_config = luigi.configuration.LuigiConfigParser.instance()
-    test_config.set('QueryPostgres', 'host', 'localhost')
-    test_config.set('QueryPostgres', 'database', 'testdb')
-    test_config.set('QueryPostgres', 'user', 'root')
-    test_config.set('QueryPostgres', 'password', 'password')
+    test_config.set('QueryPostgres', 'host', 'fake_host')
+    test_config.set('QueryPostgres', 'database', 'fake_db')
+    test_config.set('QueryPostgres', 'user', 'fake_user')
+    test_config.set('QueryPostgres', 'password', 'fake_password')
 
 
 class TestFindExternalUrls(object):
