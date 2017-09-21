@@ -23,6 +23,7 @@ setup(
         'pandas',
         'luigi',
         'psycopg2',
+        'sqlalchemy',
         'networkx',
         'rfc3987',
     ],

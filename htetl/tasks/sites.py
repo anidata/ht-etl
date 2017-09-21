@@ -11,7 +11,7 @@ import htetl.util as util
 class BaseSites(util.QueryPostgres):
 
     '''Return list of sites identifed as data scraping sources with IDs'''
-    sql = 'select Id, Authority from BaseSites'
+    sql = 'select "Id", "Authority" from "BaseSites"'
 
     def output(self):
         in_path = 'data/base_sites.csv'

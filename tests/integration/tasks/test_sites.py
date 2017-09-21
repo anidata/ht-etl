@@ -1,5 +1,5 @@
 '''Integration tests for htetl.tasks.sites'''
-
+import htetl.tasks.sites as tasks_sites
 
 class TestITBaseSites(object):
 
