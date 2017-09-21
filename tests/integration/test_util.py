@@ -30,6 +30,6 @@ class TestITQueryPostgres(object):
         with self.task.output().open('r') as f:
             data = f.read()
             assert (
-                data !=
+                data ==
                 test_data.RAWPAGEDATA_RAW__PAGE_CSV_CONTENTS
             )
