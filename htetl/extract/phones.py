@@ -52,7 +52,7 @@ def normalize(match_group):
     return '-'.join([norm_area_code, norm_first_three, norm_last_four])
 
 
-def ExtractPhones(df):
+def extract_phone(df):
     '''
         Does parsing logic
     '''
@@ -86,7 +86,7 @@ class ParsePhones(luigi.Task):
         logger.info("Processing {}".format(in_path))
         df = pd.read_csv(in_path)
         # go over each html and grap phones
-        phonedf = ExtractPhones(df)
+        phonedf = extract_phone(df)
         with open(self.output().path, 'a') as f:
         # write posting id & phones to CSV
             phonedf.to_csv(f,index=False)
