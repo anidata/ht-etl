@@ -66,9 +66,9 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
     apt-get install -y postgresql postgresql-contrib
+    sudo -u postgres psql -c 'create database test_db'
     echo "listen_addresses = '*'" | sudo tee -a /etc/postgresql/9.5/main/postgresql.conf
     echo "host all postgres 0.0.0.0/0 trust" | sudo tee /etc/postgresql/9.5/main/pg_hba.conf
     sudo /etc/init.d/postgresql restart && sleep 5
-    sudo -u postgres psql -c 'create database test_db'
   SHELL
 end
