@@ -3,7 +3,7 @@ import luigi.configuration
 
 import htetl.tasks.sites as tasks_sites
 import htetl.extract.sites as extract_sites
-from .. import test_data, test_utils
+from ... import test_data, test_utils
 
 
 def setup_module():
