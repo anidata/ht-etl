@@ -2,10 +2,9 @@ import luigi
 import os
 import pandas as pd
 import sqlalchemy
-import sys
-if sys.version_info[0] < 3:
+try:
     from StringIO import StringIO
-else:
+except ImportError:
     from io import StringIO
 
 from .. import test_data
