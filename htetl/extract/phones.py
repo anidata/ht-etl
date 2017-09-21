@@ -51,6 +51,24 @@ def normalize(match_group):
 
     return '-'.join([norm_area_code, norm_first_three, norm_last_four])
 
+
+def ExtractPhones(df):
+    '''
+        Does parsing logic
+    '''
+    phones =[]
+    for i, row in df.iterrows():
+        match = NUMBER_REGEX.findall(row["content"])
+
+        if match:
+            for phone in match:
+                pnumber=normalize(phone)
+
+                phones.append([row["id"],pnumber])
+
+    phonedf = pd.DataFrame(phones,columns=["pageid","phone"]).drop_duplicates()
+    return phonedf
+
 class ParsePhones(luigi.Task):
     '''
         Parses phone numbers from raw page data & saves phone numbets / post IDs in CSV file
@@ -67,18 +85,8 @@ class ParsePhones(luigi.Task):
 	in_path = self.input().path
         logger.info("Processing {}".format(in_path))
         df = pd.read_csv(in_path)
-        phones = []
         # go over each html and grap phones
-        for i, row in df.iterrows():
-            match = NUMBER_REGEX.findall(row["content"])
-
-            if match:
-                for phone in match:
-                    pnumber=normalize(phone)
-
-                    phones.append([row["id"],pnumber])
-
-        phonedf = pd.DataFrame(phones,columns=["pageid","phone"]).drop_duplicates()
+        phonedf = ExtractPhones(df)
         with open(self.output().path, 'a') as f:
         # write posting id & phones to CSV
             phonedf.to_csv(f,index=False)
