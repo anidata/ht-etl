@@ -1,14 +1,7 @@
 import re
-import luigi
-import logging
 import pandas as pd
-import string
-from htetl.tasks import loadpages
-from htetl import util
 
 
-logger = logging.getLogger('luigi-interface')
-logger.setLevel(logging.DEBUG)
 
 # TODO actually test and optimize the regex
 LEADING_NUMBER = '(\+?[1]?)'
@@ -36,6 +29,7 @@ LAST_FOUR_INDEX = 14
 
 
 def normalize(match_group):
+    '''gets rid of non numbers and puts everything in number format'''
     def _norm(text):
         lower_text = text.lower()
         for d, w in enumerate(['zero', 'one', 'two', 'three', 'four',
@@ -50,34 +44,20 @@ def normalize(match_group):
 
     return '-'.join([norm_area_code, norm_first_three, norm_last_four])
 
-class ParsePhones(luigi.Task):
+
+def extract_phone(df):
     '''
-        Parses phone numbers from raw page data & saves phone numbets / post IDs in CSV file
+        Does parsing logic
     '''
-    outfile = 'data/page_emails.csv'
+    phones =[]
+    for i, row in df.iterrows():
+        match = NUMBER_REGEX.findall(row["content"])
 
-    def requires(self):
-        return loadpages.RawPageData()
+        if match:
+            for phone in match:
+                pnumber=normalize(phone)
 
-    def output(self):
-        return luigi.LocalTarget(self.outfile)
+                phones.append([row["id"],pnumber])
 
-    def run(self):
-	in_path = self.input().path
-        logger.info("Processing {}".format(in_path))
-        df = pd.read_csv(in_path)
-        phones = []
-        # go over each html and grap phones
-        for i, row in df.iterrows():
-            match = NUMBER_REGEX.findall(row["content"])
-
-            if match:
-                for phone in match:
-                    pnumber=normalize(phone)
-
-                    phones.append([row["id"],pnumber])
-
-        phonedf = pd.DataFrame(phones)
-        with open(self.output().path, 'a') as f:
-        # write posting id & phones to CSV
-            phonedf.to_csv(f,index=False)
+    phonedf = pd.DataFrame(phones,columns=["pageid","phone"]).drop_duplicates()
+    return phonedf
