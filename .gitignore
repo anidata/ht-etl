@@ -7,3 +7,5 @@ data/*.csv
 data/*.json
 **/.coverage
 **/.vagrant
+**/*.aes
+aws-deployment.env
