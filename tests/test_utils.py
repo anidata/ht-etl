@@ -21,7 +21,7 @@ def mock_targets(task):
         except AttributeError:
             try:
                 return {t: _update(target[t]) for t in target}
-            except KeyError:
+            except (KeyError, TypeError):
                 return [_update(t) for t in target]
 
     task._orig_input = task.input
