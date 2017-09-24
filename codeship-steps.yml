@@ -1,0 +1,4 @@
+---
+- service: awsdeployment
+  command: aws ecs run-task --cluster default --task-definition ht-etl --count 1
+...
