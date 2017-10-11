@@ -46,14 +46,17 @@ class MakeGraph(luigi.Task):
             logger.info("Processing {}".format(in_path.path))
 
             for i, (k, v) in enumerate(data.groupby(data.columns[-1])):
-                v = v.values.tolist()
-                v = [x[0] for x in v]
-                v_right = v[1:]
-                if len(v) == 1:
-                    v_right = v
+                values = v.values.tolist()
+                page_ids = [x[0] for x in values]
+                offset_page_ids = page_ids[1:]
+                if len(page_ids) == 1:
+                    offset_page_ids = page_ids
                 else:
-                    v_right[-1] = v[0]
-                out.append([(a, b) for a, b in zip(v, v_right)])
+                    offset_page_ids.append(page_ids[0])
+                out.append([
+                    (a, b)
+                    for a, b in zip(page_ids, offset_page_ids)
+                ])
 
         out = [item for sublist in out for item in sublist]
 
@@ -74,6 +77,7 @@ class MakeGraph(luigi.Task):
 
         with self.output().open('w') as f:
             df_out.to_csv(f, index=None)
+
 
 class LoadEntityIds(util.LoadPostgres):
     table = 'backpageentities'
