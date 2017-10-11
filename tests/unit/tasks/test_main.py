@@ -56,7 +56,7 @@ class TestMakeGraphOld(object):
             assert task.complete()
 
             with task.output().open('r') as f:
-                data = f.read().split('\n')
+                data = f.read().strip().split('\n')
                 expected = [
                     'entity_id,backpagepostid',
                     '0,1',
