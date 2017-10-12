@@ -33,7 +33,7 @@ DATA_FLAT_OID_CSV_CONTENTS = (
 
 class TestMakeGraphOld(object):
 
-    '''Test MakeGraph luigi task'''
+    '''Test old/original MakeGraph luigi task'''
 
     def setup(self):
         test_config = luigi.configuration.LuigiConfigParser.instance()
@@ -44,6 +44,44 @@ class TestMakeGraphOld(object):
         data = {
             'data/flat_phone.csv': DATA_FLAT_PHONE_CSV_CONTENTS,
             'data/flat_email.csv': DATA_FLAT_EMAIL_CSV_CONTENTS,
+            'data/flat_oid.csv': DATA_FLAT_OID_CSV_CONTENTS,
+        }
+
+        with test_utils.mock_targets(self.task) as task:
+            for target in luigi.task.flatten(task.input()):
+                with target.open('w') as f:
+                    f.write(data[target.path])
+
+            task.run()
+            assert task.complete()
+
+            with task.output().open('r') as f:
+                data = f.read().strip().split('\n')
+                expected = [
+                    'entity_id,backpagepostid',
+                    '0,1',
+                    '1,2',
+                    '0,3',
+                    '1,4',
+                    '2,5',
+                    '2,6',
+                ]
+                assert set(data) == set(expected), ('%s != %s' % (str(data), str(expected)))
+
+
+class TestMakeGraphNew(object):
+
+    '''Test MakeGraph luigi task with newer data extract requirements'''
+
+    def setup(self):
+        test_config = luigi.configuration.LuigiConfigParser.instance()
+        test_config.set('htetl-flags', 'new_data_extractor', 'true')
+        self.task = main.MakeGraph()
+
+    def test_run(self):
+        data = {
+            'data/page_phones.csv': DATA_FLAT_PHONE_CSV_CONTENTS,
+            'data/parsed_email.csv': DATA_FLAT_EMAIL_CSV_CONTENTS,
             'data/flat_oid.csv': DATA_FLAT_OID_CSV_CONTENTS,
         }
 
