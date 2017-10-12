@@ -3,7 +3,7 @@ from  htetl import util
 
 class RawPageData(util.QueryPostgres):
     """ load eaxmple """
-    sql = 'select Id, Content from page limit 100'
+    sql = 'select id, content from page limit 100'
 
     def output(self):
         in_path = 'data/raw_page.csv'
