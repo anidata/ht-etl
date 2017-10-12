@@ -39,11 +39,11 @@ class FindExternalSites(luigi.Task):
 
         out = []
         for df_index, row in pages.iterrows():
-            site_list = sites.extract_sites(row['Content'])
+            site_list = sites.extract_sites(row['content'])
             out.extend([
                 {
                 'PageId': row.id,
-                'ExternalSiteId': base_sites.iloc[external_site]['Id']
+                'ExternalSiteId': base_sites.iloc[external_site]['id']
                 }
                 for external_site in site_list
             ])
