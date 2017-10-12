@@ -1,5 +1,5 @@
 RAWPAGEDATA_RAW__PAGE_CSV_CONTENTS = (
-'''Id,Content
+'''id,content
 1,<html><body></body></html>
 2,<html><body>www.google.com</body></html>
 ''')
