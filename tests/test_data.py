@@ -5,6 +5,27 @@ RAWPAGEDATA_RAW__PAGE_CSV_CONTENTS = (
 ''')
 
 
+BACKPAGEEMAIL_CSV_CONTENTS = (
+'''backpagepostid,name
+1,post@post.com
+''')
+
+
+BACKPAGEPHONE_CSV_CONTENTS = (
+'''backpagepostid,number
+1,123-123-1234
+1,456-456-4567
+2,456-456-4567
+''')
+
+
+BACKPAGEPOST_CSV_CONTENTS = (
+'''id,oid
+1,3
+2,4
+''')
+
+
 BASESITES_BASE_SITES__CSV_CONTENTS = (
 '''Id,Authority
 1,www.google.com

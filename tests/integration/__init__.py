@@ -16,13 +16,16 @@ POSTGRES_PASSWORD = os.environ.get('TEST_POSTGRES_PASSWORD', '')
 POSTGRES_DATABASE = os.environ.get('TEST_POSTGRES_DATABASE', 'test_db')
 
 
-def setup_package():
-    engine = sqlalchemy.create_engine(
+def sqlalchemy_engine():
+    return sqlalchemy.create_engine(
         'postgresql://{user}:{password}@{host}/{dbname}'.format(
             user=POSTGRES_USER, password=POSTGRES_PASSWORD,
             host=POSTGRES_HOST, dbname=POSTGRES_DATABASE
         )
     )
+
+def setup_package():
+    engine = sqlalchemy_engine()
 
     test_config = luigi.configuration.LuigiConfigParser.instance()
     test_config.set('QueryPostgres', 'host', POSTGRES_HOST)
@@ -33,7 +36,7 @@ def setup_package():
     pd.read_csv(
         StringIO(test_data.RAWPAGEDATA_RAW__PAGE_CSV_CONTENTS)
     ).to_sql(
-        'Page', engine,
+        'page', engine,
         if_exists='replace',
         index=False,
     )
@@ -42,6 +45,30 @@ def setup_package():
         StringIO(test_data.BASESITES_BASE_SITES__CSV_CONTENTS)
     ).to_sql(
         'BaseSites', engine,
+        if_exists='replace',
+        index=False,
+    )
+
+    pd.read_csv(
+        StringIO(test_data.BACKPAGEEMAIL_CSV_CONTENTS)
+    ).to_sql(
+        'backpageemail', engine,
+        if_exists='replace',
+        index=False,
+    )
+
+    pd.read_csv(
+        StringIO(test_data.BACKPAGEPHONE_CSV_CONTENTS)
+    ).to_sql(
+        'backpagephone', engine,
+        if_exists='replace',
+        index=False,
+    )
+
+    pd.read_csv(
+        StringIO(test_data.BACKPAGEPOST_CSV_CONTENTS)
+    ).to_sql(
+        'backpagepost', engine,
         if_exists='replace',
         index=False,
     )

@@ -10,7 +10,7 @@ class QueryPostgresTestChild(util.QueryPostgres):
 
     '''Child class of QueryPostgres to facilitate testing'''
 
-    sql = 'SELECT * FROM "Page"'
+    sql = 'SELECT * FROM "page"'
 
     def output(self):
         return luigi.mock.MockTarget('test.csv')
