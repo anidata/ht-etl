@@ -57,7 +57,7 @@ class ParseEmails(luigi.Task):
 
     def run(self):
         in_path = self.input().path
-        df = pd.read_csv(csv_path)
+        df = pd.read_csv(in_path)
         email_df = extract_emails(df)
         with open(self.output().path, 'a') as f:  # write posting id & emails to CSV
             email_df.to_csv(f, index=None, encoding='utf-8')

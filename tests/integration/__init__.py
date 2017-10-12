@@ -26,6 +26,9 @@ def sqlalchemy_engine():
 
 def setup_package():
     engine = sqlalchemy_engine()
+    meta = sqlalchemy.MetaData()
+    meta.reflect(bind=engine)
+    meta.drop_all(engine)
 
     test_config = luigi.configuration.LuigiConfigParser.instance()
     test_config.set('QueryPostgres', 'host', POSTGRES_HOST)
