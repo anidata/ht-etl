@@ -3,10 +3,11 @@ import logging
 import pandas as pd
 import networkx as nx
 import string
+import htetl.extract.emails
 import htetl.get_data as get_data
 import htetl.reverse_url as reverse_url
+import htetl.tasks.phones
 import htetl.util as util
-import htetl.extract.emails
 
 
 logger = logging.getLogger('luigi-interface')
@@ -28,9 +29,12 @@ class MakeGraph(luigi.Task):
     def requires(self):
         if self.NEW_DATA_EXTRACTOR:
             return {
-                'email': htetl.extract.emails.ParseEmails()
+                'email': htetl.extract.emails.ParseEmails(),
+                'phone': htetl.tasks.phones.ParsePhones(),
+                # TODO: This needs to be adapted to the new Page data
+                # extraction methods like ParseEmail and ParsePhones
+                'oid': get_data.RawPosterData(),
             }
-
         else:
             return [get_data.RawPhoneData(),
                     get_data.RawEmailData(),
@@ -40,10 +44,12 @@ class MakeGraph(luigi.Task):
         """ data is small enough to use pandas for the processing """
 
         out = []
-        for in_path in self.input():
-            with in_path.open('r') as f:
+
+        # TODO: When htetl-flags:new_data_extractor is removed, remove the
+        # flatten call and clean up the for loop
+        for in_target in luigi.task.flatten(self.input()):
+            with in_target.open('r') as f:
                 data = pd.read_csv(f)
-            logger.info("Processing {}".format(in_path.path))
 
             for i, (k, v) in enumerate(data.groupby(data.columns[-1])):
                 values = v.values.tolist()
@@ -60,7 +66,6 @@ class MakeGraph(luigi.Task):
 
         out = [item for sublist in out for item in sublist]
 
-        logger.info("Making Graph".format(in_path.path))
         G = nx.Graph()
         G.add_edges_from(out)
 
