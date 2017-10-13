@@ -77,15 +77,15 @@ class MakeGraph(luigi.Task):
         G.add_edges_from(edges)
 
         sub_graphs = []
+        page_graph_id = []
         for i, x in enumerate(nx.connected_component_subgraphs(G)):
             nodes = nx.nodes(x)
-            sub_graphs.append(list(zip([i] * len(nodes), nodes)))
+            page_graph_id.extend([(i, node) for node in nodes])
 
-        sub_graphs = [item for sublist in sub_graphs for item in sublist]
-
-        df_out = pd.DataFrame(sub_graphs,
-                              columns=['entity_id',
-                                       'backpagepostid']).astype(int)
+        df_out = pd.DataFrame(
+            page_graph_id,
+            columns=['entity_id', 'backpagepostid']
+        ).astype(int)
 
         with self.output().open('w') as f:
             df_out.to_csv(f, index=None)
