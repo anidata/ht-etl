@@ -1,7 +1,8 @@
 import pandas as pd
 import luigi
+import htetl.extract.emails as emails
 from htetl.tasks import loadpages
-from htetl import util
+import htetl.util as util
 
 
 class ParseEmails(luigi.Task):
@@ -19,7 +20,7 @@ class ParseEmails(luigi.Task):
     def run(self):
         in_path = self.input().path
         df = pd.read_csv(in_path)
-        email_df = extract_emails(df)
+        email_df = emails.extract_emails(df)
         with open(self.output().path, 'a') as f:  # write posting id & emails to CSV
             email_df.to_csv(f, index=None, encoding='utf-8')
 
