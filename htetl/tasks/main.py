@@ -3,9 +3,9 @@ import logging
 import pandas as pd
 import networkx as nx
 import string
-import htetl.extract.emails
 import htetl.get_data as get_data
 import htetl.reverse_url as reverse_url
+import htetl.tasks.emails
 import htetl.tasks.phones
 import htetl.util as util
 
@@ -29,7 +29,7 @@ class MakeGraph(luigi.Task):
     def requires(self):
         if self.NEW_DATA_EXTRACTOR:
             return {
-                'email': htetl.extract.emails.ParseEmails(),
+                'email': htetl.tasks.emails.ParseEmails(),
                 'phone': htetl.tasks.phones.ParsePhones(),
                 # TODO: This needs to be adapted to the new Page data
                 # extraction methods like ParseEmail and ParsePhones
@@ -43,7 +43,7 @@ class MakeGraph(luigi.Task):
     def run(self):
         """ data is small enough to use pandas for the processing """
 
-        out = []
+        graphs = []
 
         # TODO: When htetl-flags:new_data_extractor is removed, remove the
         # flatten call and clean up the for loop
@@ -52,6 +52,13 @@ class MakeGraph(luigi.Task):
                 data = pd.read_csv(f)
 
             for i, (k, v) in enumerate(data.groupby(data.columns[-1])):
+                # if there is more than one page, links all pages by
+                # offsetting, like:
+                #
+                # [ 1 2 3 ]
+                # [ 2 3 1 ]
+                #
+                # becomes [ (1, 2), (2, 3), (3, 1) ]
                 values = v.values.tolist()
                 page_ids = [x[0] for x in values]
                 offset_page_ids = page_ids[1:]
@@ -59,15 +66,15 @@ class MakeGraph(luigi.Task):
                     offset_page_ids = page_ids
                 else:
                     offset_page_ids.append(page_ids[0])
-                out.append([
+                graphs.append([
                     (a, b)
                     for a, b in zip(page_ids, offset_page_ids)
                 ])
 
-        out = [item for sublist in out for item in sublist]
+        edges = [edge for edge_list in graphs for edge in edge_list]
 
         G = nx.Graph()
-        G.add_edges_from(out)
+        G.add_edges_from(edges)
 
         sub_graphs = []
         for i, x in enumerate(nx.connected_component_subgraphs(G)):
