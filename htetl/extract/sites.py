@@ -21,7 +21,10 @@ def extract_sites(text):
     '''
     urls = URL_REGEX.findall(text)
     sites = set(
-        rfc3987.parse(u, rule='URI')['authority']
+        # Take only the last part of the authority
+        '.'.join(
+            rfc3987.parse(u, rule='URI')['authority'].split('.')[-2:]
+        )
         for u in urls
     )
 

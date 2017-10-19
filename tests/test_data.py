@@ -2,6 +2,7 @@ RAWPAGEDATA_RAW__PAGE_CSV_CONTENTS = (
 '''id,content
 1,<html><body></body></html>
 2,<html><body>www.google.com</body></html>
+3,<html><body>subdomain.yahoo.com</body></html>
 ''')
 
 
@@ -28,6 +29,6 @@ BACKPAGEPOST_CSV_CONTENTS = (
 
 BASESITES_BASE_SITES__CSV_CONTENTS = (
 '''Id,Authority
-1,www.google.com
-2,www.bing.com
+1,google.com
+2,bing.com
 ''')

@@ -31,3 +31,12 @@ class TestFindExternalUrls(object):
 
             task.run()
             assert task.complete()
+            with task.output().open('r') as f:
+                out_data = [l.strip() for l in f.readlines()]
+
+            assert out_data == [
+                'Id,Authority',
+                '1,google.com',
+                '2,bing.com',
+                '3,yahoo.com',
+            ], out_data
