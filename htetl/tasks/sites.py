@@ -43,7 +43,7 @@ class FindExternalSites(luigi.Task):
             out.extend([
                 {
                 'PageId': row.id,
-                'ExternalSiteId': base_sites.iloc[external_site]['id']
+                'ExternalSiteId': base_sites.loc[external_site]['Id']
                 }
                 for external_site in site_list
             ])
