@@ -31,12 +31,20 @@ class TestFindExternalUrls(object):
 
             task.run()
             assert task.complete()
-            with task.output().open('r') as f:
-                out_data = [l.strip() for l in f.readlines()]
 
-            assert out_data == [
+            with task.output()['page_sites'].open('r') as f:
+                page_data = [l.strip() for l in f.readlines()]
+            assert page_data == [
+                'PageId,ExternalSiteId',
+                '2,1',
+                '3,3',
+                '4,4',
+            ], page_data
+
+            with task.output()['site_updates'].open('r') as f:
+                site_data = [l.strip() for l in f.readlines()]
+            assert site_data == [
                 'Id,Authority',
-                '1,google.com',
-                '2,bing.com',
                 '3,yahoo.com',
-            ], out_data
+                '4,other.com',
+            ]

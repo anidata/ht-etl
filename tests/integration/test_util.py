@@ -1,6 +1,9 @@
 '''Integration tests for htetl.util'''
+from StringIO import StringIO
+
 import luigi
 import luigi.mock
+import pandas as pd
 
 import htetl.util as util
 from .. import test_data
@@ -30,6 +33,9 @@ class TestITQueryPostgres(object):
         with self.task.output().open('r') as f:
             data = f.read()
             assert (
-                data ==
-                test_data.RAWPAGEDATA_RAW__PAGE_CSV_CONTENTS
+                pd.read_csv(StringIO(data)).equals(
+                    pd.read_csv(StringIO(
+                        test_data.RAWPAGEDATA_RAW__PAGE_CSV_CONTENTS
+                    ))
+                )
             )
