@@ -3,6 +3,7 @@ RAWPAGEDATA_RAW__PAGE_CSV_CONTENTS = (
 1,<html><body></body></html>
 2,<html><body>www.google.com</body></html>
 3,<html><body>subdomain.yahoo.com</body></html>
+4,<html><body><a href="other.com/site/"></a></body></html>
 ''')
 
 
