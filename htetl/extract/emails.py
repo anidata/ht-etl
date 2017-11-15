@@ -31,8 +31,7 @@ def extract_emails(df):
     return pd.DataFrame(
         [
             (pageid,"".join([email[0], "@", email[2], ".", email[4]]))
-            for pageid,body in
-            df[["id", "content"]].values
+            for pageid,body in df[["id", "content"]].values
             for email in EMAIL_RE.findall(body)
         ],
         columns=["pageid", "email"]

@@ -1,5 +1,4 @@
 from htetl.extract.emails import extract_emails
-import os
 import pandas as pd
 
 def test_extract_emails():
@@ -20,4 +19,4 @@ def test_extract_emails():
         columns=["pageid", "email"]
     )
     email_df = extract_emails(df)
-    assert all(email_df == expected)
+    assert email_df.equals(expected)
