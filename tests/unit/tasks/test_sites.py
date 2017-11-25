@@ -43,8 +43,8 @@ class TestFindExternalUrls(object):
 
             with task.output()['site_updates'].open('r') as f:
                 site_data = [l.strip() for l in f.readlines()]
-            assert site_data == [
+            assert set(site_data) == set([
                 'Id,Authority',
                 '3,yahoo.com',
                 '4,other.com',
-            ]
+            ])

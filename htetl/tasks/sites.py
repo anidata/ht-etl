@@ -57,17 +57,21 @@ class FindExternalSites(luigi.Task):
                     external_site_id = site_dict[external_site]
                 except KeyError:
                     external_site_id = new_site_id
+                    site_dict[external_site] = external_site_id
+
                     site_updates.append((new_site_id, external_site))
                     new_site_id += 1
-                updates.append({
-                    'PageId': row.id,
-                    'ExternalSiteId': external_site_id
-                })
+                updates.append((row.id, external_site_id))
 
             out.extend(updates)
 
+        # Remove duplicate entries
+        out = list(set(out))
         with self.output()['page_sites'].open('w') as f:
-            pd.DataFrame(out).to_csv(
+            page_site_df = pd.DataFrame(
+                out, columns=['PageId', 'ExternalSiteId']
+            ).sort_values('PageId')
+            page_site_df.to_csv(
                 f,
                 index=False,
                 columns=['PageId', 'ExternalSiteId']
